@@ -1,64 +1,68 @@
-package gocli
+package cli
 
 import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/ermos/gocli/help"
-	"log"
 	"os"
 )
 
 type CLI struct {
 	Name 		string
 	Description	string
-	Actions 	[]*Action
+	Args 		[]string
+	actions 	[]*Action
 }
 
-func Init(name, description string) *CLI {
-	return &CLI {
-		Name: name,
-		Description: description,
-		Actions: []*Action{
-			{
-				Name: "help",
-				Method: help.Handler{},
-			},
-		},
-	}
+var c = CLI {
+	Name: "cli",
+	Description: "default cli description",
+	Args: os.Args,
 }
 
-func (c *CLI) Run() {
+func Init(name, description string) {
+	c.Name = name
+	c.Description = description
+}
+
+func Run() {
 	var a *Action
 	var err error
 	ctx := context.Background()
 	removeArgs(0, 1)
-	if len(os.Args) < 1 {
-		a, err = c.findAction("help")
-		if err != nil {
-			log.Fatal("cannot find help command")
-		}
-		if err = a.Method.Run(ctx, *c); err != nil {
-			log.Fatal(err.Error())
-		}
+	if len(c.Args) < 1 {
+		showGlobalHelp()
+		return
 	}
-	//a, err := c.findAction(os.Args[1])
+	a, err = findAction(c.Args[0])
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	removeArgs(0, 1)
+	if len(c.Args) < 1 || c.Args[0] != "--help" {
+		if err = a.Method.Run(ctx, c); err != nil {
+			fmt.Println(err.Error())
+		}
+	} else {
+		showCommandHelp(a)
+	}
 }
 
-func (c *CLI) findAction(name string) (*Action, error) {
-	for _, action := range c.Actions {
+func findAction(name string) (*Action, error) {
+	for _, action := range c.actions {
 		if name == action.Name {
 			return action, nil
 		}
 	}
-	return nil, errors.New(fmt.Sprintf("'%s' is not a %s command.\nSee '%s --help'", c.Name, name, c.Name))
+	return nil, errors.New(fmt.Sprintf("%s: '%s' is not a %s command.\nSee '%s --help'", c.Name, name, c.Name, c.Name))
 }
 
 func removeArgs (from, length int) {
-	start := os.Args[:from]
-	if from != len(os.Args) {
-		end := os.Args[from+length:]
+	start := c.Args[:from]
+	if from != len(c.Args) {
+		end := c.Args[from+length:]
 		start = append(start, end...)
 	}
-	os.Args = start
+	c.Args = start
 }

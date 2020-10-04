@@ -1,11 +1,13 @@
-package gocli
+package cli
 
 import (
 	"context"
+	"log"
 )
 
 type Action struct {
 	Name	string
+	Args 	[]string
 	Method 	ActionMethod
 	Options []*Option
 }
@@ -15,11 +17,15 @@ type ActionMethod interface {
 	Run(ctx context.Context, cli CLI) error
 }
 
-func (c *CLI) AddAction(name string, handler ActionMethod) *Action {
-	c.Actions = append(c.Actions, &Action{
+func AddAction(handler ActionMethod, name string, args ...string) *Action {
+	if _, err := findAction(name); err == nil {
+		log.Fatal("cli: duplicate method name '" + name + "'")
+	}
+	c.actions = append(c.actions, &Action{
 		Name: name,
 		Method: handler,
+		Args: args,
 	})
-	return c.Actions[len(c.Actions)-1]
+	return c.actions[len(c.actions)-1]
 }
 

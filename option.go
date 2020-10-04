@@ -1,4 +1,4 @@
-package gocli
+package cli
 
 type Option struct {
 	Name 		string
