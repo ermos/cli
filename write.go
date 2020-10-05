@@ -13,6 +13,6 @@ const (
 )
 
 func Write (msg string, args... interface{}) {
-	fmt.Printf(msg, args...)
+	fmt.Printf(msg + "\n", args...)
 }
 
