@@ -14,14 +14,14 @@ Usage:  %s [OPTIONS] COMMAND
 %s
 
 Options:
-...
-
+%s
 Commands:
 %s
 Run '%s COMMAND --help' for more information on a command.
 `,
 	c.Name,
 	c.Description,
+	printOptions(c.Options),
 	printCommands(),
 	c.Name,
 	)
@@ -57,14 +57,14 @@ Options:
 		a.Name,
 		strings.Join(args, " "),
 		a.Method.Description(c),
-		printCommandOptions(a),
+		printOptions(a.Options),
 	)
 }
 
-func printCommandOptions(a *Action) string {
+func printOptions(opts []*Option) string {
 	var list string
 	var maxLength, maxLengthShort int
-	for _, o := range a.Options {
+	for _, o := range opts {
 		if len(o.Name) + len(strings.Join(o.ArgsType, " ")) > maxLength {
 			maxLength = len(o.Name) + len(strings.Join(o.ArgsType, " "))
 		}
@@ -72,7 +72,7 @@ func printCommandOptions(a *Action) string {
 			maxLengthShort = len(o.ShortName)
 		}
 	}
-	for _, o := range a.Options {
+	for _, o := range opts {
 		var short string
 		if o.ShortName != ""  {
 			short = strings.Repeat(" ", maxLengthShort - len(o.ShortName)) + "-" + o.ShortName + ", "
@@ -80,7 +80,7 @@ func printCommandOptions(a *Action) string {
 			short = strings.Repeat(" ", maxLengthShort - len(o.ShortName) + 3)
 		}
 		list += fmt.Sprintf(
-			" %s%s %s%s\n",
+			"  %s%s %s%s\n",
 			short,
 			"--" + o.Name,
 			strings.Join(o.ArgsType, " ") + strings.Repeat(" ", maxLength-len(o.Name)-len(strings.Join(o.ArgsType, " "))+tabSpace),

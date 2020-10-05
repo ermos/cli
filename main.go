@@ -12,6 +12,7 @@ type CLI struct {
 	Description	string
 	Args 		[]string
 	actions 	[]*Action
+	Options 	[]*Option
 }
 
 var c = CLI {
