@@ -21,7 +21,7 @@ Run '%s COMMAND --help' for more information on a command.
 `,
 	c.Name,
 	c.Description,
-	printOptions(c.Options),
+	printOptions(c.options),
 	printCommands(),
 	c.Name,
 	)

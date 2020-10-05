@@ -29,9 +29,14 @@ type Option struct {
 	Description string
 }
 
+type OptionValue struct {
+	String 		[]string
+	Interface 	[]interface{}
+}
+
 func AddOption(name, description string, argsType ...int) *Option {
 	o := addOption(name, description, argsType...)
-	c.Options = append(c.Options, o)
+	c.options = append(c.options, o)
 	return o
 }
 
