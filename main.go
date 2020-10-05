@@ -32,11 +32,25 @@ func Run() {
 	var err error
 	ctx := context.Background()
 	removeArgs(0, 1)
+	// Global Help
 	if len(c.Args) < 1 || c.Args[0] == "--help" {
 		showGlobalHelp()
 		return
 	}
+	// Before All Middleware
+	err = callMiddleware(ctx, beforeAllMiddleware)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	// Global Options
 	err = findOptions(c.options)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	// Before Middleware
+	err = callMiddleware(ctx, beforeMiddleware)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -44,6 +58,7 @@ func Run() {
 	if len(c.Args) == 0 {
 		return
 	}
+	// Process
 	a, err = findAction(c.Args[0])
 	if err != nil {
 		fmt.Println(err.Error())
@@ -56,6 +71,12 @@ func Run() {
 		}
 	} else {
 		showCommandHelp(a)
+	}
+	// After Middleware
+	err = callMiddleware(ctx, afterMiddleware)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
 	}
 }
 
