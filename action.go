@@ -9,7 +9,7 @@ type Action struct {
 	Name	string
 	Args 	[]string
 	Method 	ActionMethod
-	Options []*Option
+	options []*Option
 }
 
 type ActionMethod interface {

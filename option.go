@@ -1,27 +1,5 @@
 package cli
 
-import (
-	"fmt"
-	"log"
-)
-
-// Argument's Type
-const (
-	AtString = 0
-	AtInt = 1
-	AtBool = 2
-	AtFloat = 3
-	AtDate = 4
-)
-
-var argTypeName = []string{
-	"string",
-	"int",
-	"bool",
-	"float",
-	"date",
-}
-
 type Option struct {
 	Name 		string
 	ShortName 	string
@@ -34,31 +12,25 @@ type OptionValue struct {
 	Interface 	[]interface{}
 }
 
-func AddOption(name, description string, argsType ...int) *Option {
+func AddOption(name, description string, argsType ...string) *Option {
 	o := addOption(name, description, argsType...)
 	c.options = append(c.options, o)
 	return o
 }
 
-func (a *Action) AddOption(name, description string, argsType ...int) *Option {
+func (a *Action) AddOption(name, description string, argsType ...string) *Option {
 	o := addOption(name, description, argsType...)
-	a.Options = append(a.Options, o)
+	a.options = append(a.options, o)
 	return o
 }
 
-func addOption (name, description string, argsType ...int) *Option {
+func addOption (name, description string, argsType ...string) *Option {
 	o := new(Option)
 	o.Name = name
 	o.Description = description
-	length := len(argTypeName)-1
-	var args []string
-	for _, argID := range argsType {
-		if argID > length {
-			log.Fatal(fmt.Sprintf("cli: unknow argument's type ID %d", argID))
-		}
-		args = append(args, argTypeName[argID])
+	for _, arg := range argsType {
+		o.ArgsType = append(o.ArgsType, arg)
 	}
-	o.ArgsType = args
 	return o
 }
 

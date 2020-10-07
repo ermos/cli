@@ -57,7 +57,7 @@ Options:
 		a.Name,
 		strings.Join(args, " "),
 		a.Method.Description(c),
-		printOptions(a.Options),
+		printOptions(a.options),
 	)
 }
 
