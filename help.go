@@ -13,7 +13,6 @@ Usage:  %s [OPTIONS] COMMAND
 
 %s
 
-Options:
 %s
 Commands:
 %s
@@ -46,15 +45,15 @@ func showCommandHelp(a *Action) {
 	for _, arg := range a.Args {
 		args = append(args, "[" + strings.ToUpper(arg) + "]")
 	}
-	Write(`
-Usage:  %s %s [OPTIONS] %s
-
-%s
-
-Options:
-%s`,
+	options := printOptions(a.options)
+	argOption := " [OPTIONS]"
+	if options == "" {
+		argOption = ""
+	}
+	Write("\nUsage:  %s %s%s %s\n\n%s%s",
 		c.Name,
 		a.Name,
+		argOption,
 		strings.Join(args, " "),
 		a.Method.Description(c),
 		printOptions(a.options),
@@ -62,7 +61,7 @@ Options:
 }
 
 func printOptions(opts []*Option) string {
-	var list string
+	var list []string
 	var maxLength, maxLengthShort int
 	for _, o := range opts {
 		if len(o.Name) + len(strings.Join(o.ArgsType, " ")) > maxLength {
@@ -79,13 +78,16 @@ func printOptions(opts []*Option) string {
 		} else {
 			short = strings.Repeat(" ", maxLengthShort - len(o.ShortName) + 3)
 		}
-		list += fmt.Sprintf(
-			"  %s%s %s%s\n",
+		list = append(list, fmt.Sprintf(
+			"  %s%s %s%s",
 			short,
 			"--" + o.Name,
 			strings.Join(o.ArgsType, " ") + strings.Repeat(" ", maxLength-len(o.Name)-len(strings.Join(o.ArgsType, " "))+tabSpace),
 			o.Description,
-		)
+		))
 	}
-	return list
+	if len(list) != 0 {
+		return fmt.Sprintf("\n\nOptions:\n%s", strings.Join(list, "\n"))
+	}
+	return ""
 }

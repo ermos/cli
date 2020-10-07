@@ -13,7 +13,7 @@ type CLI struct {
 	Description	string
 	args 		[]string
 	Args 		[]string
-	Options 	map[string]*[]string
+	Options 	map[string][]string
 	actions 	[]*Action
 	options 	[]*Option
 }
@@ -115,7 +115,7 @@ func removeArgs(from, length int) {
 }
 
 func findOptions(o []*Option) error {
-	result := make(map[string]*[]string)
+	result := make(map[string][]string)
 	for key, value := range c.Options {
 		result[key] = value
 	}
@@ -148,7 +148,7 @@ func findOptions(o []*Option) error {
 			i++
 			values = append(values, c.args[i])
 		}
-		result[possibility[c.args[currI]].Name] = &values
+		result[possibility[c.args[currI]].Name] = values
 	}
 	if totalArg == -1 {
 		totalArg = length
