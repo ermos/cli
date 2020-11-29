@@ -8,16 +8,7 @@ import (
 var tabSpace = 4
 
 func showGlobalHelp() {
-	Write(`
-Usage:  %s [OPTIONS] COMMAND
-
-%s
-
-%s
-Commands:
-%s
-Run '%s COMMAND --help' for more information on a command.
-`,
+	Write("\nUsage:  %s [OPTIONS] COMMAND\n\n%s %s\n\nCommands:\n%s\nRun '%s COMMAND --help' for more information on a command.",
 	c.Name,
 	c.Description,
 	printOptions(c.options),
