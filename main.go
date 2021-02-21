@@ -68,9 +68,6 @@ func Run() {
 		fmt.Println(err.Error())
 		return
 	}
-	if len(c.args) == 0 {
-		return
-	}
 	// Process
 	if len(c.args) < 1 || c.args[0] != "--help" {
 		// Process Options
