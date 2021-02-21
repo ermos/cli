@@ -12,7 +12,7 @@ type CLI struct {
 	Name 		string
 	Description	string
 	Current struct {
-		Action 	string
+		Action 	*Action
 	}
 	args 		[]string
 	Args 		[]string
@@ -48,7 +48,7 @@ func Run() {
 		fmt.Println(err.Error())
 		return
 	}
-	c.Current.Action = a.Name
+	c.Current.Action = a
 	removeArgs(0, 1)
 	// Before All Middleware
 	err = callMiddleware(ctx, beforeAllMiddleware)
