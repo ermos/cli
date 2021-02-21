@@ -11,6 +11,9 @@ import (
 type CLI struct {
 	Name 		string
 	Description	string
+	Current struct {
+		Action 	string
+	}
 	args 		[]string
 	Args 		[]string
 	Options 	map[string][]string
@@ -39,6 +42,14 @@ func Run() {
 		showGlobalHelp()
 		return
 	}
+	// Get Action
+	a, err = findAction(c.args[0])
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	c.Current.Action = a.Name
+	removeArgs(0, 1)
 	// Before All Middleware
 	err = callMiddleware(ctx, beforeAllMiddleware)
 	if err != nil {
@@ -61,12 +72,6 @@ func Run() {
 		return
 	}
 	// Process
-	a, err = findAction(c.args[0])
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	removeArgs(0, 1)
 	if len(c.args) < 1 || c.args[0] != "--help" {
 		// Process Options
 		err = findOptions(a.options)
